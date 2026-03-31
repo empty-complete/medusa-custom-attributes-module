@@ -1,23 +1,23 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/empty-complete/medusa-custom-attributes/main/assets/logo_medusa-custom-attributes.png" alt="logo medusa custom attributes module repo" width="120">
-  <h1>Custom attributes module for Medusa v2</h1>
+  <img src="https://raw.githubusercontent.com/empty-complete/medusa-product-attributes/main/assets/logo_medusa-custom-attributes.png" alt="logo medusa product attributes module repo" width="120">
+  <h1>Product Attributes Module for Medusa v2</h1>
   <p><i>Extend your store's capabilities with a flexible attribute system for products and categories</i></p>
   
   <p>
-    <a href="https://github.com/empty-complete/medusa-custom-attributes/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/empty-complete/medusa-custom-attributes" alt="License">
+    <a href="https://github.com/empty-complete/medusa-product-attributes/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/empty-complete/medusa-product-attributes" alt="License">
     </a>
-    <a href="https://www.npmjs.com/package/medusa-custom-attributes">
-      <img src="https://img.shields.io/npm/v/medusa-custom-attributes" alt="npm version">
+    <a href="https://www.npmjs.com/package/@empty-complete/medusa-product-attributes">
+      <img src="https://img.shields.io/npm/v/@empty-complete/medusa-product-attributes" alt="npm version">
     </a>
-    <a href="https://github.com/empty-complete/medusa-custom-attributes/actions/workflows/ci.yml">
-      <img src="https://github.com/empty-complete/medusa-custom-attributes/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+    <a href="https://github.com/empty-complete/medusa-product-attributes/actions/workflows/ci.yml">
+      <img src="https://github.com/empty-complete/medusa-product-attributes/actions/workflows/ci.yml/badge.svg" alt="CI Status">
     </a>
-    <a href="https://github.com/empty-complete/medusa-custom-attributes/commits/main">
-      <img src="https://img.shields.io/github/commit-activity/m/empty-complete/medusa-custom-attributes" alt="GitHub commit activity">
+    <a href="https://github.com/empty-complete/medusa-product-attributes/commits/main">
+      <img src="https://img.shields.io/github/commit-activity/m/empty-complete/medusa-product-attributes" alt="GitHub commit activity">
     </a>
-    <a href="https://www.npmjs.com/package/medusa-custom-attributes">
-      <img src="https://img.shields.io/npm/dm/medusa-custom-attributes" alt="npm downloads">
+    <a href="https://www.npmjs.com/package/@empty-complete/medusa-product-attributes">
+      <img src="https://img.shields.io/npm/dm/@empty-complete/medusa-product-attributes" alt="npm downloads">
     </a>
   </p>
   
@@ -60,7 +60,7 @@
 | Dependency | Version |
 |------------|---------|
 | Medusa | ^2.0.0 |
-| Node.js | >=18 |
+| Node.js | >=20 |
 | TypeScript | ^5.0.0 |
 
 ---
@@ -71,13 +71,16 @@
 
 ```bash
 # Via npm
-npm install medusa-custom-attributes
+npm install @empty-complete/medusa-product-attributes
 
 # Via pnpm
-pnpm add medusa-custom-attributes
+pnpm add @empty-complete/medusa-product-attributes
 
 # Via yarn
-yarn add medusa-custom-attributes
+yarn add @empty-complete/medusa-product-attributes
+
+# Via GitHub Packages (requires authentication)
+npm install @empty-complete/medusa-product-attributes --registry=https://npm.pkg.github.com
 ```
 
 ### 1. Add the module to configuration
@@ -89,7 +92,7 @@ import { defineConfig } from '@medusajs/framework/utils'
 export default defineConfig({
   modules: [
     {
-      resolve: 'medusa-custom-attributes',
+      resolve: '@empty-complete/medusa-product-attributes',
     },
   ],
 })
@@ -112,7 +115,7 @@ The module will automatically create the necessary tables and register services.
 ### Creating a category attribute
 
 ```typescript
-import { CUSTOM_ATTRIBUTE_MODULE } from 'medusa-custom-attributes'
+import { CUSTOM_ATTRIBUTE_MODULE } from '@empty-complete/medusa-product-attributes'
 
 const module = container.resolve(CUSTOM_ATTRIBUTE_MODULE)
 
@@ -337,7 +340,7 @@ await module.createProductAttribute({
 ## Project Structure
 
 ```
-medusa-custom-attributes/
+medusa-product-attributes/
 ├── src/
 │   ├── models/
 │   │   ├── category-custom-attribute.ts
