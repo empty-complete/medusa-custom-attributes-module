@@ -1,12 +1,12 @@
 {
-  "name": "medusa-custom-attributes-module",
+  "name": "@empty-complete/medusa-custom-attributes",
   "version": "1.0.0",
   "description": "Custom attributes module for Medusa v2 with support for text, number, file types and units of measurement",
   "author": "empty-complete",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/empty-complete/medusa-custom-attributes-module"
+    "url": "https://github.com/empty-complete/medusa-custom-attributes"
   },
   "keywords": [
     "medusa",
