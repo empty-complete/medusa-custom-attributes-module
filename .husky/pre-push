@@ -1,4 +1,14 @@
 #!/usr/bin/env sh
+
+# Get version before last commit (from HEAD~1) and current version
+CURRENT_VERSION=$(node -p "require('./package.json').version")
+PREV_VERSION=$(git show HEAD~1:package.json 2>/dev/null | grep '"version"' | sed 's/.*"version": *"\([^"]*\)".*/\1/')
+
+if [ "$CURRENT_VERSION" != "$PREV_VERSION" ]; then
+  echo "Version changed manually ($PREV_VERSION → $CURRENT_VERSION), skipping auto-increment"
+  exit 0
+fi
+
 echo "Incrementing patch version..."
 npm run version:inc -- patch
 git add package.json
