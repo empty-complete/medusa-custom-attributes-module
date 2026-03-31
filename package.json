@@ -35,7 +35,9 @@
     "prepublishOnly": "npm run clean && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "version:inc": "node -e \"const p=require('./package.json'),v=p.version.split('.').map(Number),n=process.argv[2]||'patch';if(n==='major'){v[0]++;v[1]=0;v[2]=0}else if(n==='minor'){v[1]++;v[2]=0}else{v[2]++};p.version=v.join('.');require('fs').writeFileSync('package.json',JSON.stringify(p,null,2))\"",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "@medusajs/framework": "^2.0.0"
@@ -45,6 +47,7 @@
     "@medusajs/framework": "^2.13.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.0.0"
