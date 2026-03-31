@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@empty-complete/medusa-product-attributes':
-        specifier: github:empty-complete/medusa-product-attributes
-        version: https://codeload.github.com/empty-complete/medusa-product-attributes/tar.gz/2408d9222cf5cf78aea6b39e1974a4b73879098e(@medusajs/framework@2.13.5(@medusajs/cli@2.13.5(@types/node@20.19.37))(@types/node@20.19.37)(zod@3.25.76))
     devDependencies:
       '@jest/globals':
         specifier: ^30.0.0
@@ -350,13 +346,6 @@ packages:
 
   '@emnapi/wasi-threads@1.2.0':
     resolution: {integrity: sha512-N10dEJNSsUx41Z6pZsXU8FjPjpBEplgH24sfkmITrBED1/U2Esum9F3lfLrMjKHHjmi557zQn7kR9R+XWXu5Rg==}
-
-  '@empty-complete/medusa-product-attributes@https://codeload.github.com/empty-complete/medusa-product-attributes/tar.gz/2408d9222cf5cf78aea6b39e1974a4b73879098e':
-    resolution: {tarball: https://codeload.github.com/empty-complete/medusa-product-attributes/tar.gz/2408d9222cf5cf78aea6b39e1974a4b73879098e}
-    version: 1.0.0
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@medusajs/framework': ^2.0.0
 
   '@graphql-codegen/core@4.0.2':
     resolution: {integrity: sha512-IZbpkhwVqgizcjNiaVzNAzm/xbWT6YnGgeOLwVjm4KbJn3V2jchVtuzHH09G5/WkkLSk2wgbXNdwjM41JxO6Eg==}
@@ -4200,10 +4189,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
-
-  '@empty-complete/medusa-product-attributes@https://codeload.github.com/empty-complete/medusa-product-attributes/tar.gz/2408d9222cf5cf78aea6b39e1974a4b73879098e(@medusajs/framework@2.13.5(@medusajs/cli@2.13.5(@types/node@20.19.37))(@types/node@20.19.37)(zod@3.25.76))':
-    dependencies:
-      '@medusajs/framework': 2.13.5(@medusajs/cli@2.13.5(@types/node@20.19.37))(@types/node@20.19.37)(zod@3.25.76)
 
   '@graphql-codegen/core@4.0.2(graphql@16.13.2)':
     dependencies:
