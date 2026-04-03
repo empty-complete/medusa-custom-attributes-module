@@ -1,0 +1,237 @@
+import { defineWidgetConfig } from "@medusajs/admin-sdk"
+import {
+  DetailWidgetProps,
+  AdminProductCategory,
+} from "@medusajs/framework/types"
+import { Container, Heading, Button, Input, Text, Badge } from "@medusajs/ui"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { sdk } from "../lib/sdk"
+
+type CategoryCustomAttribute = {
+  id: string
+  label: string
+  type: "text" | "number" | "file" | "boolean"
+  category_id: string
+}
+
+type FormState = {
+  label: string
+  type: "text" | "number"
+}
+
+const emptyForm = (): FormState => ({ label: "", type: "text" })
+
+const CategoryAttributeTemplatesWidget = ({
+  data,
+}: DetailWidgetProps<AdminProductCategory>) => {
+  const categoryId = data.id
+  const qc = useQueryClient()
+  const queryKey = ["category-custom-attributes", categoryId]
+
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [addForm, setAddForm] = useState<FormState>(emptyForm())
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [mutationError, setMutationError] = useState<string | null>(null)
+
+  const {
+    data: result,
+    isLoading,
+    isError,
+  } = useQuery<{
+    category_custom_attributes: CategoryCustomAttribute[]
+  }>({
+    queryKey,
+    queryFn: () =>
+      sdk.client.fetch(`/admin/category/${categoryId}/custom-attributes`),
+  })
+
+  const attributes = result?.category_custom_attributes ?? []
+
+  const createMutation = useMutation({
+    mutationFn: (body: { label: string; type: string }) =>
+      sdk.client.fetch(`/admin/category/${categoryId}/custom-attributes`, {
+        method: "POST",
+        body,
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey })
+      setShowAddForm(false)
+      setAddForm(emptyForm())
+      setMutationError(null)
+    },
+    onError: (err: any) => {
+      setMutationError(err?.message || "Ошибка при создании атрибута")
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      sdk.client.fetch(`/admin/category/${categoryId}/custom-attributes`, {
+        method: "PATCH",
+        body: { id, deleted_at: new Date().toISOString() },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey })
+      setConfirmDeleteId(null)
+    },
+  })
+
+  const handleAdd = () => {
+    if (!addForm.label.trim()) return
+    createMutation.mutate({
+      label: addForm.label.trim(),
+      type: addForm.type,
+    })
+  }
+
+  return (
+    <Container className="divide-y p-0">
+      <div className="flex items-center justify-between px-6 py-4">
+        <Heading level="h2">Атрибуты</Heading>
+        {!showAddForm && (
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => setShowAddForm(true)}
+          >
+            + Добавить
+          </Button>
+        )}
+      </div>
+
+      {isLoading && (
+        <div className="px-6 py-4">
+          <Text className="text-ui-fg-muted text-sm">Загрузка…</Text>
+        </div>
+      )}
+
+      {isError && (
+        <div className="px-6 py-4">
+          <Text className="text-ui-fg-error text-sm">
+            Не удалось загрузить атрибуты.
+          </Text>
+        </div>
+      )}
+
+      {!isLoading && !isError && attributes.length === 0 && !showAddForm && (
+        <div className="px-6 py-4">
+          <Text className="text-ui-fg-muted text-sm">
+            Нет атрибутов. Добавьте первый.
+          </Text>
+        </div>
+      )}
+
+      {attributes.length > 0 && (
+        <div className="divide-y">
+          {attributes.map((attr) =>
+            confirmDeleteId === attr.id ? (
+              <div
+                key={attr.id}
+                className="flex items-center gap-3 px-6 py-3 text-sm"
+              >
+                <span className="flex-1 text-ui-fg-base">
+                  Удалить «{attr.label}»?
+                </span>
+                <Button
+                  size="small"
+                  variant="danger"
+                  onClick={() => deleteMutation.mutate(attr.id)}
+                  isLoading={deleteMutation.isPending}
+                >
+                  Удалить
+                </Button>
+                <Button
+                  size="small"
+                  variant="secondary"
+                  onClick={() => setConfirmDeleteId(null)}
+                >
+                  Отмена
+                </Button>
+              </div>
+            ) : (
+              <div
+                key={attr.id}
+                className="flex items-center gap-3 px-6 py-3"
+              >
+                <span className="flex-1 text-sm text-ui-fg-base">
+                  {attr.label}
+                </span>
+                <Badge size="2xsmall" color="grey">
+                  {attr.type === "text"
+                    ? "Текст"
+                    : attr.type === "number"
+                      ? "Число"
+                      : attr.type}
+                </Badge>
+                <button
+                  onClick={() => setConfirmDeleteId(attr.id)}
+                  className="text-xs text-ui-fg-error hover:underline"
+                >
+                  Удалить
+                </button>
+              </div>
+            )
+          )}
+        </div>
+      )}
+
+      {showAddForm && (
+        <div className="flex items-center gap-2 px-6 py-3">
+          <Input
+            value={addForm.label}
+            onChange={(e) =>
+              setAddForm((f) => ({ ...f, label: e.target.value }))
+            }
+            placeholder="Название атрибута"
+            className="flex-1 h-8 text-sm"
+            autoFocus
+          />
+          <select
+            value={addForm.type}
+            onChange={(e) =>
+              setAddForm((f) => ({
+                ...f,
+                type: e.target.value as "text" | "number",
+              }))
+            }
+            className="h-8 rounded border border-ui-border-base bg-ui-bg-base px-2 text-sm"
+          >
+            <option value="text">Текст</option>
+            <option value="number">Число</option>
+          </select>
+          <Button
+            size="small"
+            onClick={handleAdd}
+            isLoading={createMutation.isPending}
+          >
+            Добавить
+          </Button>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => {
+              setShowAddForm(false)
+              setAddForm(emptyForm())
+              setMutationError(null)
+            }}
+          >
+            Отмена
+          </Button>
+        </div>
+      )}
+
+      {mutationError && (
+        <div className="px-6 py-2">
+          <Text className="text-ui-fg-error text-sm">{mutationError}</Text>
+        </div>
+      )}
+    </Container>
+  )
+}
+
+export const config = defineWidgetConfig({
+  zone: "product_category.details.after",
+})
+
+export default CategoryAttributeTemplatesWidget

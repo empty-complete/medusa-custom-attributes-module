@@ -1,12 +1,12 @@
 {
-  "name": "@empty-complete/medusa-product-attributes",
-  "version": "0.9.3",
+  "name": "@empty-complete-org/medusa-product-attributes",
+  "version": "0.10.0",
   "description": "Custom attributes module for Medusa v2 with support for text, number, file types and units of measurement",
   "author": "empty-complete",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/empty-complete/medusa-product-attributes"
+    "url": "git+https://github.com/empty-complete/medusa-product-attributes.git"
   },
   "keywords": [
     "medusa",
@@ -19,7 +19,9 @@
     "product"
   ],
   "files": [
-    "dist"
+    "dist",
+    "src/admin",
+    "src/api"
   ],
   "exports": {
     ".": {
@@ -27,7 +29,9 @@
       "require": "./dist/index.js"
     },
     "./models/*": "./dist/models/*.js",
-    "./service": "./dist/service.js"
+    "./service": "./dist/service.js",
+    "./admin/*": "./src/admin/*.tsx",
+    "./api/*": "./src/api/*"
   },
   "scripts": {
     "build": "tsc",
@@ -40,7 +44,12 @@
     "prepare": "husky"
   },
   "peerDependencies": {
-    "@medusajs/framework": "^2.0.0"
+    "@medusajs/framework": "^2.0.0",
+    "@medusajs/admin-sdk": "^2.0.0",
+    "@medusajs/ui": "^4.0.0",
+    "@medusajs/js-sdk": "^2.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@jest/globals": "^30.0.0",
@@ -56,6 +65,6 @@
     "node": ">=20"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   }
 }
