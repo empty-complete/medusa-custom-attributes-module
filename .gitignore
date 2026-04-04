@@ -1,5 +1,8 @@
 node_modules
 dist
+.medusa
+.yalc
+yalc.lock
 *.log
 .DS_Store
 .claude

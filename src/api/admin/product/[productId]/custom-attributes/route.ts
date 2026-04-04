@@ -1,9 +1,10 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { CUSTOM_ATTRIBUTE_MODULE } from "../../../../../index"
+import { CUSTOM_ATTRIBUTE_MODULE } from "../../../../../modules/product-attributes"
+import type CustomAttributeService from "../../../../../modules/product-attributes/service"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { productId } = req.params
-  const service = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
+  const service: CustomAttributeService = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
 
   const product_custom_attributes = await service.getProductAttributes(productId)
 
@@ -16,7 +17,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     attributes: Array<{ id: string; value: string }>
   }
 
-  const service = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
+  const service: CustomAttributeService = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
 
   // Get existing product attributes
   const existing = await service.getProductAttributes(productId)

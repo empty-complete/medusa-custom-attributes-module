@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from '@jest/globals'
-import CustomAttributeService from '../service'
+import CustomAttributeService from '../modules/product-attributes/service'
 
 describe('CustomAttributeService', () => {
   let service: CustomAttributeService

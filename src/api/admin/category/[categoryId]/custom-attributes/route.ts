@@ -1,9 +1,10 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { CUSTOM_ATTRIBUTE_MODULE } from "../../../../../index"
+import { CUSTOM_ATTRIBUTE_MODULE } from "../../../../../modules/product-attributes"
+import type CustomAttributeService from "../../../../../modules/product-attributes/service"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { categoryId } = req.params
-  const service = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
+  const service: CustomAttributeService = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
 
   const category_custom_attributes = await service.getCategoryAttributes(categoryId)
 
@@ -19,7 +20,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     sort_order?: number
   }
 
-  const service = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
+  const service: CustomAttributeService = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
 
   const category_custom_attribute = await service.createCategoryAttribute({
     label,
@@ -33,7 +34,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 }
 
 export async function PATCH(req: MedusaRequest, res: MedusaResponse) {
-  const service = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
+  const service: CustomAttributeService = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
   const { id, ...data } = req.body as {
     id: string
     label?: string

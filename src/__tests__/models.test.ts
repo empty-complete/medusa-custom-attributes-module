@@ -20,7 +20,7 @@ describe('Model Definitions', () => {
 
       // The model should be importable and have the expected fields
       // @ts-ignore - dynamic import for testing
-      expect(() => require('../models/category-custom-attribute')).not.toThrow()
+      expect(() => require('../modules/product-attributes/models/category-custom-attribute')).not.toThrow()
     })
 
     it('should define id as primary key', () => {
@@ -46,7 +46,7 @@ describe('Model Definitions', () => {
       ]
 
       // @ts-ignore - dynamic import for testing
-      expect(() => require('../models/product-custom-attribute')).not.toThrow()
+      expect(() => require('../modules/product-attributes/models/product-custom-attribute')).not.toThrow()
     })
 
     it('should have belongsTo relationship with CategoryCustomAttribute', () => {
