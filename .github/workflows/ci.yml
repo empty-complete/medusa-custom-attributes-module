@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   test:
@@ -60,45 +59,3 @@ jobs:
 
       - name: Build
         run: pnpm run build
-
-  publish-github:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-          registry-url: 'https://npm.pkg.github.com'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Check if version exists and set snapshot if needed
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          if npm view @empty-complete/medusa-product-attributes@$VERSION --registry https://npm.pkg.github.com &>/dev/null; then
-            SNAPSHOT_VERSION="${VERSION}-$(echo $GITHUB_SHA | cut -c1-7)"
-            echo "Version $VERSION exists, using snapshot: $SNAPSHOT_VERSION"
-            node -p "JSON.stringify({...require('./package.json'), version: '$SNAPSHOT_VERSION'}, null, 2)" > package.json
-          else
-            echo "Publishing new version: $VERSION"
-          fi
-
-      - name: Build
-        run: pnpm run build
-
-      - name: Publish to GitHub Packages
-        run: pnpm publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
