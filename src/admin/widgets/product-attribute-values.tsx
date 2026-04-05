@@ -101,14 +101,28 @@ const ProductAttributeValuesWidget = ({
     try {
       const formData = new FormData()
       formData.append("files", file)
-      const res: any = await sdk.client.fetch(`/admin/uploads`, {
+      const response = await fetch(`/admin/uploads`, {
         method: "POST",
+        credentials: "include",
         body: formData,
       })
+      if (!response.ok) {
+        const text = await response.text()
+        console.error("Upload failed", response.status, text)
+        alert(`Ошибка загрузки файла: ${response.status}`)
+        return
+      }
+      const res: any = await response.json()
       const url = res?.files?.[0]?.url
       if (url) {
         setFormValues((prev) => ({ ...prev, [attrId]: url }))
+      } else {
+        console.error("No URL in upload response", res)
+        alert("Файл загружен, но URL не получен")
       }
+    } catch (err) {
+      console.error("Upload error", err)
+      alert("Ошибка загрузки файла")
     } finally {
       setUploadingId(null)
     }
