@@ -7,6 +7,7 @@ import { Container, Heading, Button, Input, Text, Badge } from "@medusajs/ui"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { sdk } from "../lib/sdk"
+import { useT } from "../lib/i18n"
 
 type AttributeType = "text" | "number" | "file" | "boolean"
 
@@ -32,40 +33,41 @@ const CategoryAttributeTemplatesWidget = ({
   data,
 }: DetailWidgetProps<AdminProductCategory>) => {
   const categoryId = data.id
+  const t = useT()
   const qc = useQueryClient()
   const queryKey = ["category-custom-attributes", categoryId]
 
   const [showAddForm, setShowAddForm] = useState(false)
-  const [showPresetList, setShowPresetList] = useState(false)
+  const [showTemplateList, setShowTemplateList] = useState(false)
   const [addForm, setAddForm] = useState<FormState>(emptyForm())
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [mutationError, setMutationError] = useState<string | null>(null)
 
-  const presetsQuery = useQuery<{
-    attribute_presets: Array<{
+  const templatesQuery = useQuery<{
+    attribute_templates: Array<{
       id: string
       label: string
       type: AttributeType
       unit: string | null
     }>
   }>({
-    queryKey: ["attribute-presets"],
-    queryFn: () => sdk.client.fetch(`/admin/attribute-presets`),
-    enabled: showPresetList,
+    queryKey: ["attribute-templates"],
+    queryFn: () => sdk.client.fetch(`/admin/attribute-templates`),
+    enabled: showTemplateList,
   })
 
-  const applyPresetMutation = useMutation({
-    mutationFn: (presetId: string) =>
-      sdk.client.fetch(`/admin/attribute-presets/${presetId}/apply`, {
+  const applyTemplateMutation = useMutation({
+    mutationFn: (templateId: string) =>
+      sdk.client.fetch(`/admin/attribute-templates/${templateId}/apply`, {
         method: "POST",
         body: { category_id: categoryId },
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey })
-      setShowPresetList(false)
+      setShowTemplateList(false)
     },
     onError: (err: any) => {
-      setMutationError(err?.message || "Ошибка при применении пресета")
+      setMutationError(err?.message || "Ошибка при применении шаблона")
     },
   })
 
@@ -125,63 +127,58 @@ const CategoryAttributeTemplatesWidget = ({
     })
   }
 
-  const typeLabel = (t: string) =>
-    t === "text" ? "Текст"
-    : t === "number" ? "Число"
-    : t === "file" ? "Файл"
-    : t === "boolean" ? "Да/Нет"
-    : t
+  const typeLabel = (v: string) => t(`type.${v}`, v)
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Атрибуты</Heading>
-        {!showAddForm && !showPresetList && (
+        <Heading level="h2">{t("attributes")}</Heading>
+        {!showAddForm && !showTemplateList && (
           <div className="flex items-center gap-2">
             <Button
               variant="secondary"
               size="small"
-              onClick={() => setShowPresetList(true)}
+              onClick={() => setShowTemplateList(true)}
             >
-              Из пресета
+              {t("fromTemplate")}
             </Button>
             <Button
               variant="secondary"
               size="small"
               onClick={() => setShowAddForm(true)}
             >
-              + Добавить
+              + {t("add")}
             </Button>
           </div>
         )}
       </div>
 
-      {showPresetList && (
+      {showTemplateList && (
         <div className="px-6 py-3">
           <div className="mb-2 flex items-center justify-between">
-            <Text size="small" weight="plus">Выберите пресет</Text>
+            <Text size="small" weight="plus">Выберите шаблон</Text>
             <Button
               size="small"
               variant="secondary"
-              onClick={() => setShowPresetList(false)}
+              onClick={() => setShowTemplateList(false)}
             >
               Закрыть
             </Button>
           </div>
-          {presetsQuery.isLoading && (
-            <Text className="text-ui-fg-muted text-sm">Загрузка…</Text>
+          {templatesQuery.isLoading && (
+            <Text className="text-ui-fg-muted text-sm">{t("loading")}</Text>
           )}
-          {presetsQuery.data?.attribute_presets.length === 0 && (
+          {templatesQuery.data?.attribute_templates.length === 0 && (
             <Text className="text-ui-fg-muted text-sm">
               Пресетов нет. Создайте в настройках Product Attributes.
             </Text>
           )}
           <div className="flex flex-col gap-1">
-            {presetsQuery.data?.attribute_presets.map((p) => (
+            {templatesQuery.data?.attribute_templates.map((p) => (
               <button
                 key={p.id}
-                onClick={() => applyPresetMutation.mutate(p.id)}
-                disabled={applyPresetMutation.isPending}
+                onClick={() => applyTemplateMutation.mutate(p.id)}
+                disabled={applyTemplateMutation.isPending}
                 className="flex items-center justify-between rounded border border-ui-border-base px-3 py-2 text-left text-sm hover:bg-ui-bg-subtle disabled:opacity-50"
               >
                 <span>{p.label}</span>
@@ -196,7 +193,7 @@ const CategoryAttributeTemplatesWidget = ({
 
       {isLoading && (
         <div className="px-6 py-4">
-          <Text className="text-ui-fg-muted text-sm">Загрузка…</Text>
+          <Text className="text-ui-fg-muted text-sm">{t("loading")}</Text>
         </div>
       )}
 

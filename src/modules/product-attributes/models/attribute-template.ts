@@ -1,6 +1,6 @@
 import { model } from "@medusajs/framework/utils"
 
-const AttributePreset = model.define("attribute_preset", {
+const AttributeTemplate = model.define("attribute_template", {
   id: model.id().primaryKey(),
   key: model.text(),
   label: model.text(),
@@ -9,4 +9,4 @@ const AttributePreset = model.define("attribute_preset", {
   description: model.text().nullable(),
 })
 
-export default AttributePreset
+export default AttributeTemplate

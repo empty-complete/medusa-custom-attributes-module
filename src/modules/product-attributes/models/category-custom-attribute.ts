@@ -9,8 +9,9 @@ const CategoryCustomAttribute = model
     label: model.text().default(""),
     unit: model.text().nullable(), // Единица измерения (кг, м, шт и т.д.)
     sort_order: model.number().default(0),
-    category_id: model.text(),
+    category_id: model.text().nullable(),
     is_standard: model.boolean().default(false), // Стандартные атрибуты (certificates, 3dmodel, manual)
+    is_global: model.boolean().default(false), // Глобальные атрибуты, применяются ко всем товарам
     product_custom_attributes: model.hasMany(() => ProductCustomAttribute),
   })
   .cascades({

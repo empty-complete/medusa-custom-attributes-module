@@ -54,6 +54,7 @@ describe('CustomAttributeService', () => {
       expect(service.listCategoryCustomAttributes).toHaveBeenCalledWith({
         category_id: categoryId,
         deleted_at: null,
+        is_global: false,
       })
       expect(result).toEqual(mockAttributes)
     })
@@ -69,13 +70,17 @@ describe('CustomAttributeService', () => {
         { id: 'a2', key: 'weight', label: 'Weight', type: 'number', category_id: 'parent-cat', sort_order: 0 },
         { id: 'a3', key: 'brand', label: 'Brand', type: 'text', category_id: 'root-cat', sort_order: 0 },
       ]
-      service.listCategoryCustomAttributes = jest.fn().mockResolvedValue(mockAttributes)
+      // First call: globals (empty), second: category attrs
+      service.listCategoryCustomAttributes = jest.fn()
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(mockAttributes)
 
       const result = await service.getAttributesByCategoryIds(categoryIds)
 
       expect(service.listCategoryCustomAttributes).toHaveBeenCalledWith({
         category_id: categoryIds,
         deleted_at: null,
+        is_global: false,
       })
       expect(result).toHaveLength(3)
       // First id in the list is the leaf category — its attributes are not inherited
@@ -84,11 +89,14 @@ describe('CustomAttributeService', () => {
       expect(result.find((a: any) => a.id === 'a3')).toMatchObject({ inherited: true, source_category_id: 'root-cat' })
     })
 
-    it('should return empty array when no category ids provided', async () => {
-      service.listCategoryCustomAttributes = jest.fn()
+    it('should return only globals when no category ids provided', async () => {
+      service.listCategoryCustomAttributes = jest.fn().mockResolvedValue([])
       const result = await service.getAttributesByCategoryIds([])
       expect(result).toEqual([])
-      expect(service.listCategoryCustomAttributes).not.toHaveBeenCalled()
+      expect(service.listCategoryCustomAttributes).toHaveBeenCalledWith({
+        is_global: true,
+        deleted_at: null,
+      })
     })
   })
 
@@ -118,6 +126,7 @@ describe('CustomAttributeService', () => {
         key: 'material_type',
         unit: null,
         is_standard: false,
+        is_global: false,
         sort_order: 0,
       })
       expect(result).toEqual(mockResult)
@@ -142,6 +151,7 @@ describe('CustomAttributeService', () => {
         key: 'priority_attribute',
         unit: null,
         is_standard: true,
+        is_global: false,
         sort_order: 10,
       })
     })

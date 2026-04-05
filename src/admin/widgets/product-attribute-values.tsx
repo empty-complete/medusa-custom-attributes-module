@@ -32,7 +32,6 @@ const ProductAttributeValuesWidget = ({
 }: DetailWidgetProps<AdminProduct>) => {
   const productId = data.id
   const productHandle = (data as any).handle || productId
-  const categoryId = (data.categories as { id: string }[])?.[0]?.id ?? null
 
   const qc = useQueryClient()
   const [formValues, setFormValues] = useState<FormValues>({})
@@ -41,12 +40,11 @@ const ProductAttributeValuesWidget = ({
   const fileInputs = useRef<Record<string, HTMLInputElement | null>>({})
 
   const attributesQuery = useQuery<{
-    category_custom_attributes: CategoryCustomAttribute[]
+    attributes: CategoryCustomAttribute[]
   }>({
-    queryKey: ["category-custom-attributes", categoryId],
+    queryKey: ["product-attribute-schema", productId],
     queryFn: () =>
-      sdk.client.fetch(`/admin/category/${categoryId}/custom-attributes`),
-    enabled: !!categoryId,
+      sdk.client.fetch(`/admin/product/${productId}/attribute-schema`),
   })
 
   const valuesQuery = useQuery<{
@@ -59,7 +57,7 @@ const ProductAttributeValuesWidget = ({
 
   useEffect(() => {
     if (!attributesQuery.data || !valuesQuery.data) return
-    const attributes = attributesQuery.data.category_custom_attributes
+    const attributes = attributesQuery.data.attributes
     const values = valuesQuery.data.product_custom_attributes
     const initial: FormValues = {}
     for (const attr of attributes) {
@@ -90,7 +88,7 @@ const ProductAttributeValuesWidget = ({
 
   const handleSave = () => {
     if (!attributesQuery.data) return
-    const attributes = attributesQuery.data.category_custom_attributes
+    const attributes = attributesQuery.data.attributes
     const attributesToUpdate = attributes
       .filter((attr) => formValues[attr.id] !== undefined)
       .map((attr) => ({ id: attr.id, value: formValues[attr.id] ?? "" }))
@@ -145,24 +143,9 @@ const ProductAttributeValuesWidget = ({
     }
   }
 
-  if (!categoryId) {
-    return (
-      <Container className="divide-y p-0">
-        <div className="px-6 py-4">
-          <Heading level="h2">Характеристики</Heading>
-        </div>
-        <div className="px-6 py-4">
-          <Text className="text-ui-fg-muted text-sm">
-            Назначьте категорию товару, чтобы заполнить характеристики.
-          </Text>
-        </div>
-      </Container>
-    )
-  }
-
   const isLoading = attributesQuery.isLoading || valuesQuery.isLoading
   const isError = attributesQuery.isError || valuesQuery.isError
-  const attributes = attributesQuery.data?.category_custom_attributes ?? []
+  const attributes = attributesQuery.data?.attributes ?? []
 
   return (
     <Container className="divide-y p-0">

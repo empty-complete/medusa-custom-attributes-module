@@ -4,8 +4,8 @@ import type CustomAttributeService from "../../../modules/product-attributes/ser
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const service: CustomAttributeService = req.scope.resolve(CUSTOM_ATTRIBUTE_MODULE)
-  const attribute_presets = await service.listPresets()
-  res.json({ attribute_presets })
+  const attribute_templates = await service.listTemplates()
+  res.json({ attribute_templates })
 }
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
@@ -16,8 +16,8 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     unit?: string | null
     description?: string | null
   }
-  const attribute_preset = await service.createPreset(body)
-  res.status(201).json({ attribute_preset })
+  const attribute_template = await service.createTemplate(body)
+  res.status(201).json({ attribute_template })
 }
 
 export async function PATCH(req: MedusaRequest, res: MedusaResponse) {
@@ -30,6 +30,6 @@ export async function PATCH(req: MedusaRequest, res: MedusaResponse) {
     description?: string | null
     deleted_at?: string
   }
-  const attribute_preset = await service.updatePreset(id, data)
-  res.json({ attribute_preset })
+  const attribute_template = await service.updateTemplate(id, data)
+  res.json({ attribute_template })
 }

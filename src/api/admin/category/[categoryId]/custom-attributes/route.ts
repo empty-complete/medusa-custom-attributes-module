@@ -33,7 +33,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const productService = req.scope.resolve(Modules.PRODUCT)
 
   const categoryIds = await resolveAncestorChain(productService, categoryId)
-  const category_custom_attributes = await service.getAttributesByCategoryIds(categoryIds)
+  const category_custom_attributes = await service.getAttributesByCategoryIds(categoryIds, { includeGlobals: false })
 
   res.json({ category_custom_attributes })
 }
