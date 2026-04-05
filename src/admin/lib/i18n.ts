@@ -5,14 +5,16 @@ import en from "./locales/en.json"
 const locales: Record<string, Record<string, string>> = { ru, en }
 
 function detectLang(): string {
-  if (typeof window === "undefined") return "en"
+  if (typeof window === "undefined") return "ru"
   const stored = window.localStorage.getItem("i18nextLng")
   if (stored) {
     const short = stored.slice(0, 2).toLowerCase()
     if (locales[short]) return short
   }
-  const nav = (window.navigator?.language || "en").slice(0, 2).toLowerCase()
-  return locales[nav] ? nav : "en"
+  const htmlLang = document.documentElement?.lang?.slice(0, 2).toLowerCase()
+  if (htmlLang && locales[htmlLang]) return htmlLang
+  const nav = (window.navigator?.language || "ru").slice(0, 2).toLowerCase()
+  return locales[nav] ? nav : "ru"
 }
 
 export function useT() {

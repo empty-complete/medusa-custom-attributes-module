@@ -147,7 +147,7 @@ const CategoryAttributeTemplatesWidget = ({
               size="small"
               onClick={() => setShowAddForm(true)}
             >
-              + {t("add")}
+              {t("add")}
             </Button>
           </div>
         )}
@@ -223,9 +223,6 @@ const CategoryAttributeTemplatesWidget = ({
                 </span>
                 <Badge size="2xsmall" color="grey">
                   {typeLabel(attr.type)}{attr.unit ? `, ${attr.unit}` : ""}
-                </Badge>
-                <Badge size="2xsmall" color="blue">
-                  из родителя
                 </Badge>
               </div>
             ))}
