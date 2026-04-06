@@ -235,6 +235,6 @@ pnpm run dev           # medusa plugin:develop
   <h2>Contributing</h2>
   <p>Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.</p>
   <p>
-    <sub>Made with care for the Medusa community</sub>
+    <sub>Made with ❤️ for the Medusa community</sub>
   </p>
 </div>
