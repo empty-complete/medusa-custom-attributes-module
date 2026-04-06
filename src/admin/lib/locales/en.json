@@ -33,6 +33,8 @@
   "upload": "Upload",
   "uploadError": "Upload failed",
   "fileUrl": "File URL",
+  "applyTemplateError": "Failed to apply template",
+  "createError": "Failed to create attribute",
   "templates": "Attribute Templates",
   "templatesDesc": "Reusable attribute blueprints. Apply to any category in one click.",
   "globals": "Global Attributes",

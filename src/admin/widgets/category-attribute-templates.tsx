@@ -67,7 +67,7 @@ const CategoryAttributeTemplatesWidget = ({
       setShowTemplateList(false)
     },
     onError: (err: any) => {
-      setMutationError(err?.message || "Ошибка при применении шаблона")
+      setMutationError(err?.message || t("applyTemplateError"))
     },
   })
 
@@ -100,7 +100,7 @@ const CategoryAttributeTemplatesWidget = ({
       setMutationError(null)
     },
     onError: (err: any) => {
-      setMutationError(err?.message || "Ошибка при создании атрибута")
+      setMutationError(err?.message || t("createError"))
     },
   })
 
@@ -156,13 +156,13 @@ const CategoryAttributeTemplatesWidget = ({
       {showTemplateList && (
         <div className="px-6 py-3">
           <div className="mb-2 flex items-center justify-between">
-            <Text size="small" weight="plus">Выберите шаблон</Text>
+            <Text size="small" weight="plus">{t("chooseTemplate")}</Text>
             <Button
               size="small"
               variant="secondary"
               onClick={() => setShowTemplateList(false)}
             >
-              Закрыть
+              {t("close")}
             </Button>
           </div>
           {templatesQuery.isLoading && (
@@ -170,7 +170,7 @@ const CategoryAttributeTemplatesWidget = ({
           )}
           {templatesQuery.data?.attribute_templates.length === 0 && (
             <Text className="text-ui-fg-muted text-sm">
-              Пресетов нет. Создайте в настройках Product Attributes.
+              {t("noTemplates")}
             </Text>
           )}
           <div className="flex flex-col gap-1">
@@ -200,7 +200,7 @@ const CategoryAttributeTemplatesWidget = ({
       {isError && (
         <div className="px-6 py-4">
           <Text className="text-ui-fg-error text-sm">
-            Не удалось загрузить атрибуты.
+            {t("loadFailed")}
           </Text>
         </div>
       )}
@@ -209,7 +209,7 @@ const CategoryAttributeTemplatesWidget = ({
         <>
           <div className="px-6 py-2 bg-ui-bg-subtle">
             <Text size="xsmall" weight="plus" className="text-ui-fg-muted uppercase">
-              Унаследованные
+              {t("inherited")}
             </Text>
           </div>
           <div className="divide-y">
@@ -235,7 +235,7 @@ const CategoryAttributeTemplatesWidget = ({
           {inheritedAttributes.length > 0 && (
             <div className="px-6 py-2 bg-ui-bg-subtle">
               <Text size="xsmall" weight="plus" className="text-ui-fg-muted uppercase">
-                Свои
+                {t("own")}
               </Text>
             </div>
           )}
@@ -247,7 +247,7 @@ const CategoryAttributeTemplatesWidget = ({
                   className="flex items-center gap-3 px-6 py-3 text-sm"
                 >
                   <span className="flex-1 text-ui-fg-base">
-                    Удалить «{attr.label}»?
+                    {t("confirmDelete").replace("{name}", attr.label)}
                   </span>
                   <Button
                     size="small"
@@ -255,14 +255,14 @@ const CategoryAttributeTemplatesWidget = ({
                     onClick={() => deleteMutation.mutate(attr.id)}
                     isLoading={deleteMutation.isPending}
                   >
-                    Удалить
+                    {t("delete")}
                   </Button>
                   <Button
                     size="small"
                     variant="secondary"
                     onClick={() => setConfirmDeleteId(null)}
                   >
-                    Отмена
+                    {t("cancel")}
                   </Button>
                 </div>
               ) : (
@@ -280,7 +280,7 @@ const CategoryAttributeTemplatesWidget = ({
                     onClick={() => setConfirmDeleteId(attr.id)}
                     className="text-xs text-ui-fg-error hover:underline"
                   >
-                    Удалить
+                    {t("delete")}
                   </button>
                 </div>
               )
@@ -292,7 +292,7 @@ const CategoryAttributeTemplatesWidget = ({
       {!isLoading && !isError && attributes.length === 0 && !showAddForm && (
         <div className="px-6 py-4">
           <Text className="text-ui-fg-muted text-sm">
-            Нет атрибутов. Добавьте первый.
+            {t("noAttributes")}
           </Text>
         </div>
       )}
@@ -304,7 +304,7 @@ const CategoryAttributeTemplatesWidget = ({
             onChange={(e) =>
               setAddForm((f) => ({ ...f, label: e.target.value }))
             }
-            placeholder="Название атрибута"
+            placeholder={t("name")}
             className="flex-1 h-8 text-sm"
             autoFocus
           />
@@ -319,10 +319,10 @@ const CategoryAttributeTemplatesWidget = ({
             }
             className="h-8 rounded border border-ui-border-base bg-ui-bg-base px-2 text-sm"
           >
-            <option value="text">Текст</option>
-            <option value="number">Число</option>
-            <option value="file">Файл</option>
-            <option value="boolean">Да/Нет</option>
+            <option value="text">{t("type.text")}</option>
+            <option value="number">{t("type.number")}</option>
+            <option value="file">{t("type.file")}</option>
+            <option value="boolean">{t("type.boolean")}</option>
           </select>
           {addForm.type === "number" && (
             <Input
@@ -330,7 +330,7 @@ const CategoryAttributeTemplatesWidget = ({
               onChange={(e) =>
                 setAddForm((f) => ({ ...f, unit: e.target.value }))
               }
-              placeholder="ед. (кг, м, шт...)"
+              placeholder={t("unit")}
               className="w-28 h-8 text-sm"
             />
           )}
@@ -339,7 +339,7 @@ const CategoryAttributeTemplatesWidget = ({
             onClick={handleAdd}
             isLoading={createMutation.isPending}
           >
-            Добавить
+            {t("add")}
           </Button>
           <Button
             variant="secondary"
@@ -350,7 +350,7 @@ const CategoryAttributeTemplatesWidget = ({
               setMutationError(null)
             }}
           >
-            Отмена
+            {t("cancel")}
           </Button>
         </div>
       )}

@@ -4,6 +4,7 @@ import { Container, Heading, Button, Input, Text, Badge } from "@medusajs/ui"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState, useEffect, useRef } from "react"
 import { sdk } from "../lib/sdk"
+import { useT } from "../lib/i18n"
 
 type AttributeType = "text" | "number" | "file" | "boolean"
 
@@ -32,6 +33,7 @@ const ProductAttributeValuesWidget = ({
 }: DetailWidgetProps<AdminProduct>) => {
   const productId = data.id
   const productHandle = (data as any).handle || productId
+  const t = useT()
 
   const qc = useQueryClient()
   const [formValues, setFormValues] = useState<FormValues>({})
@@ -124,7 +126,7 @@ const ProductAttributeValuesWidget = ({
       if (!response.ok) {
         const text = await response.text()
         console.error("Upload failed", response.status, text)
-        alert(`Ошибка загрузки файла: ${response.status}`)
+        alert(`${t("uploadError")}: ${response.status}`)
         return
       }
       const res: any = await response.json()
@@ -133,11 +135,11 @@ const ProductAttributeValuesWidget = ({
         setFormValues((prev) => ({ ...prev, [attrId]: url }))
       } else {
         console.error("No URL in upload response", res)
-        alert("Файл загружен, но URL не получен")
+        alert(t("uploadError"))
       }
     } catch (err) {
       console.error("Upload error", err)
-      alert("Ошибка загрузки файла")
+      alert(t("uploadError"))
     } finally {
       setUploadingId(null)
     }
@@ -150,19 +152,19 @@ const ProductAttributeValuesWidget = ({
   return (
     <Container className="divide-y p-0">
       <div className="px-6 py-4">
-        <Heading level="h2">Характеристики</Heading>
+        <Heading level="h2">{t("characteristics")}</Heading>
       </div>
 
       {isLoading && (
         <div className="px-6 py-4">
-          <Text className="text-ui-fg-muted text-sm">Загрузка…</Text>
+          <Text className="text-ui-fg-muted text-sm">{t("loading")}</Text>
         </div>
       )}
 
       {isError && (
         <div className="px-6 py-4">
           <Text className="text-ui-fg-error text-sm">
-            Не удалось загрузить характеристики.
+            {t("loadFailed")}
           </Text>
         </div>
       )}
@@ -170,7 +172,7 @@ const ProductAttributeValuesWidget = ({
       {!isLoading && !isError && attributes.length === 0 && (
         <div className="px-6 py-4">
           <Text className="text-ui-fg-muted text-sm">
-            В категории нет атрибутов. Добавьте их в настройках категории.
+            {t("noAttributes")}
           </Text>
         </div>
       )}
@@ -206,8 +208,8 @@ const ProductAttributeValuesWidget = ({
                       className="h-8 flex-1 rounded border border-ui-border-base bg-ui-bg-base px-2 text-sm"
                     >
                       <option value="">—</option>
-                      <option value="true">Да</option>
-                      <option value="false">Нет</option>
+                      <option value="true">{t("yes")}</option>
+                      <option value="false">{t("no")}</option>
                     </select>
                   ) : attr.type === "file" ? (
                     <>
@@ -230,7 +232,7 @@ const ProductAttributeValuesWidget = ({
                             [attr.id]: e.target.value,
                           }))
                         }
-                        placeholder="URL файла"
+                        placeholder={t("fileUrl")}
                         className="h-8 text-sm flex-1"
                       />
                       <Button
@@ -240,7 +242,7 @@ const ProductAttributeValuesWidget = ({
                         onClick={() => fileInputs.current[attr.id]?.click()}
                         isLoading={uploadingId === attr.id}
                       >
-                        Загрузить
+                        {t("upload")}
                       </Button>
                     </>
                   ) : (
@@ -253,7 +255,7 @@ const ProductAttributeValuesWidget = ({
                           [attr.id]: e.target.value,
                         }))
                       }
-                      placeholder={attr.type === "number" ? "0" : "Значение"}
+                      placeholder={attr.type === "number" ? "0" : t("value")}
                       className="h-8 text-sm flex-1"
                     />
                   )}
@@ -268,7 +270,7 @@ const ProductAttributeValuesWidget = ({
               onClick={handleSave}
               isLoading={saveMutation.isPending}
             >
-              {saveSuccess ? "Сохранено ✓" : "Сохранить"}
+              {saveSuccess ? t("saved") : t("save")}
             </Button>
           </div>
         </>
