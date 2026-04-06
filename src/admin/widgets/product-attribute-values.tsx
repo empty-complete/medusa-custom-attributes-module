@@ -35,6 +35,20 @@ const ProductAttributeValuesWidget = ({
   const productHandle = (data as any).handle || productId
   const t = useT()
 
+  // Hide built-in Medusa "Attributes" widget (Height/Width/Weight/etc.)
+  useEffect(() => {
+    const headings = document.querySelectorAll("h2")
+    for (const h of headings) {
+      if (h.textContent === "Attributes" || h.textContent === "Атрибуты") {
+        const container = h.closest(".shadow-elevation-card-rest")
+        if (container && container.querySelector("p")?.textContent?.includes("Height") ||
+            container?.querySelector("p")?.textContent?.includes("Weight")) {
+          ;(container as HTMLElement).style.display = "none"
+        }
+      }
+    }
+  }, [])
+
   const qc = useQueryClient()
   const [formValues, setFormValues] = useState<FormValues>({})
   const [saveSuccess, setSaveSuccess] = useState(false)
