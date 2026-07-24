@@ -146,6 +146,31 @@ GET    /admin/product/:productId/custom-attributes
 POST   /admin/product/:productId/custom-attributes
 ```
 
+### Storefront (Store API)
+
+The plugin ships a read-only module link between `product` and `product_custom_attribute`, so attribute values are queryable straight from the Store API via the `fields` parameter — no extra setup in your app:
+
+```
+GET /store/products?fields=*product_custom_attributes.*,*product_custom_attributes.category_custom_attribute.*
+GET /store/products/:id?fields=*product_custom_attributes.category_custom_attribute.*
+```
+
+`category_custom_attribute` carries the attribute metadata (`label`, `key`, `type`, `unit`). The singular alias `product_custom_attribute` works as well.
+
+The same relation is available anywhere Query is, e.g. in workflows or API routes:
+
+```typescript
+const { data: products } = await query.graph({
+  entity: "product",
+  fields: [
+    "id",
+    "title",
+    "product_custom_attributes.*",
+    "product_custom_attributes.category_custom_attribute.*",
+  ],
+})
+```
+
 ### Programmatic usage
 
 ```typescript
